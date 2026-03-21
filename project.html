@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Expo | CoreFusion 2026</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --neon-blue: #00d4ff;
+            --neon-purple: #7b2fff;
+            --dark-bg: #03060f;
+            --card-bg: rgba(10, 15, 30, 0.6);
+            --text-main: #e8f4ff;
+            --text-muted: #8aa3bf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            font-family: 'Exo 2', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.4;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 40% 50%, rgba(0, 212, 255, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 70% 30%, rgba(123, 47, 255, 0.08) 0%, transparent 50%);
+            z-index: -2;
+            animation: bgShift 20s ease-in-out infinite alternate;
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+
+        @keyframes bgShift {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+
+            100% {
+                transform: scale(1.1) translate(-2%, 2%);
+            }
+        }
+
+        /* Container & Glassmorphism Card */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hackathon-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: cardReveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes cardReveal {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hackathon-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #fff, var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 600px) {
+            .title {
+                font-size: 1.6rem;
+            }
+        }
+
+
+
+        /* Grid Layout for Details */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .detail-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .detail-section:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .detail-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            color: var(--neon-blue);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-title i {
+            font-size: 1.2rem;
+            color: var(--neon-purple);
+        }
+
+        .detail-content {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        .detail-content ul {
+            list-style: none;
+        }
+
+        .detail-content li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+        }
+
+        .detail-content li:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-content li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--neon-blue);
+            font-weight: bold;
+            font-size: 1.1rem;
+            top: -2px;
+        }
+
+        .detail-content strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Mini-badges for Fee, Team, Date */
+        .badges-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            grid-column: 1 / -1;
+        }
+
+        .info-badge {
+            background: rgba(0, 212, 255, 0.04);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            padding: 24px 15px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-badge:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--neon-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .info-badge i {
+            font-size: 1.6rem;
+            color: var(--neon-blue);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .badge-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .badge-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Register Action */
+        .action-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .register-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: #000;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 18px 45px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .register-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: skewX(-15deg);
+            transition: transform 0.6s;
+        }
+
+        .register-btn:hover::before {
+            transform: translateX(300%) skewX(-15deg);
+        }
+
+        .register-btn:hover {
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.6);
+            transform: translateY(-3px);
+            color: #000;
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .hackathon-card {
+                padding: 40px 25px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .badges-wrapper {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .info-badge {
+                padding: 16px 15px;
+            }
+
+            .register-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 16px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-glow"></div>
+    <div class="grid-bg"></div>
+
+    <div class="container">
+        <div class="hackathon-card">
+            <a href="national_tech_fest_2026.html">
+                <h1 class="back"><i class="fas fa-arrow-left"></i></h1>
+            </a>
+
+            <div class="header">
+                <h1 class="title">PROJECT EXPO</h1>
+
+            </div>
+
+            <div class="details-grid">
+
+                <!-- Quick Info Badges -->
+                <div class="badges-wrapper">
+                    <div class="info-badge">
+                        <i class="fas fa-users"></i>
+                        <div class="badge-label">Team Size</div>
+                        <div class="badge-value">2 - 4 Members</div>
+                    </div>
+                    <div class="info-badge">
+                        <i class="fas fa-wallet"></i>
+                        <div class="badge-label">Entry Fee</div>
+                        <div class="badge-value">₹250 / Head</div>
+                    </div>
+                    <div class="info-badge">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="badge-label">Dates</div>
+                        <div class="badge-value">Apr 10, 2026</div>
+                    </div>
+                </div>
+
+                <!-- Themes -->
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-lightbulb"></i> Event Themes
+                    </div>
+                    <div class="detail-content">
+                        <ul>
+                            <li>Electronics And Communication Engineering</li>
+                            <li>Mechanical Engineering</li>
+                            <li>Robotics and Automation Engineering</li>
+                            <li>Electrical And Electronics Engineering</li>
+                            <li>Electronics And Instrumentation Engineering</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-phone-alt"></i> Contact
+                    </div>
+                    <div class="detail-content">
+                        <h3>Staff Co-ordinator</h3>
+                        <ul>
+                            <li><strong>ECE </strong>: G. Amsaveni - 8760018003</li>
+                            <li><strong>EEE </strong>: E. Immanuvel Bright - 9841788501</li>
+                            <li><strong>MECH </strong>: V.P. Krishnamurthy - 7558171316</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="action-area">
+                <a href="https://forms.gle/xSufMBatYkgGHv9q8" target="_blank" class="register-btn">
+                    Register Now <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
